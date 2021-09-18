@@ -4,14 +4,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs;
+  Dialogs, MigrationController;
 
 type
   TfrMigrationView = class(TForm)
+    procedure FormCreate(Sender: TObject);
   private
-    { Private declarations }
+    fMigrationController: iMigrationController;
   public
-    { Public declarations }
   end;
 
 var
@@ -20,5 +20,10 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfrMigrationView.FormCreate(Sender: TObject);
+begin
+  fMigrationController := TMigrationController.New;
+end;
 
 end.

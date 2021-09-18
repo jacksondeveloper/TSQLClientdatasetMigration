@@ -2,7 +2,8 @@ program SQLMigration;
 
 uses
   Forms,
-  MigrationView in 'MigrationView.pas' {frMigrationView};
+  MigrationView in 'MigrationView.pas' {frMigrationView},
+  MigrationController in 'MigrationController.pas';
 
 {$R *.res}
 

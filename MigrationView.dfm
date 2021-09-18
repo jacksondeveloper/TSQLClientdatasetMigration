@@ -1,6 +1,6 @@
 object frMigrationView: TfrMigrationView
-  Left = 274
-  Top = 152
+  Left = 366
+  Top = 230
   BorderStyle = bsSingle
   Caption = 'TSQLClientdatasetMigration'
   ClientHeight = 392
@@ -13,6 +13,7 @@ object frMigrationView: TfrMigrationView
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
 end
