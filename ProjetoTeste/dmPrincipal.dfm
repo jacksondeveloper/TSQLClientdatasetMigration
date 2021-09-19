@@ -1,11 +1,11 @@
 object dtmPrincipal: TdtmPrincipal
   OldCreateOrder = False
+  OnCreate = DataModuleCreate
   Left = 598
   Top = 328
   Height = 150
   Width = 215
   object SQLConnection: TSQLConnection
-    Connected = True
     ConnectionName = 'IBLocal'
     DriverName = 'Interbase'
     GetDriverFunc = 'getSQLDriverINTERBASE'
@@ -14,9 +14,7 @@ object dtmPrincipal: TdtmPrincipal
     Params.Strings = (
       'BlobSize=-1'
       'CommitRetain=False'
-      
-        'Database=C:\Users\jack\Desktop\TSQLClientdatasetMigration\Projet' +
-        'oTeste\Dados\DADOS.FDB'
+      'Database='
       'DriverName=Interbase'
       'ErrorResourceFile='
       'LocaleCode=0000'
