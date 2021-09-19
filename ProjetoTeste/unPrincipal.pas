@@ -35,7 +35,6 @@ implementation
 
 procedure TfmPrincipal.FormCreate(Sender: TObject);
 begin
-  dtmPrincipal.SQLConnection.Connected := True;
   cdsProduto.Open;
   cdsCliente.Open;
 end;
