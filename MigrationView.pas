@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, MigrationController, StdCtrls, Configuracoes, ListaArquivos;
+  Dialogs, MigrationController, StdCtrls, Configuracoes, ListaArquivos, Conversor;
 
 type
   TfrMigrationView = class(TForm)
@@ -21,7 +21,9 @@ type
     FMigrationController: iMigrationController;
     FConfiguracoes: iConfiguracoes;
     FListaArquivos: IListaArquivos;
+    FConversor: IConversor;
   public
+    procedure DoLog(Value: String);
     procedure LerConfiguracoes;
     procedure SalvarConfiguracoes;
   end;
@@ -37,7 +39,8 @@ procedure TfrMigrationView.FormCreate(Sender: TObject);
 begin
   FConfiguracoes       := TConfiguracoes.New;
   FMigrationController := TMigrationController.New;
-  FListaArquivos       := TListaArquivos.Create;
+  FListaArquivos       := TListaArquivos.New;
+  FConversor           := TConversor.New(DoLog);
 
   LerConfiguracoes;
 end;
@@ -60,8 +63,22 @@ end;
 
 procedure TfrMigrationView.btProcessarClick(Sender: TObject);
 begin
-  FListaArquivos.Carregar(edDiretorio.Text, True);
-  mmLog.Lines.Add('Total de arquivos PAS e DFM: ' + IntToStr(FListaArquivos.GetListaArquivos.Count))
+  btProcessar.Enabled := False;
+  try
+
+    FListaArquivos.Carregar(edDiretorio.Text, True);
+    mmLog.Lines.Add('Total de arquivos PAS e DFM: ' + IntToStr(FListaArquivos.GetListaArquivos.Count));
+
+    FConversor.Substituir(FListaArquivos.GetListaArquivos);
+
+  finally
+    btProcessar.Enabled := True;
+  end;
+end;
+
+procedure TfrMigrationView.DoLog(Value: String);
+begin
+  mmLog.Lines.Add(Value)
 end;
 
 end.

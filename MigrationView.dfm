@@ -35,16 +35,28 @@ object frMigrationView: TfrMigrationView
     Left = 10
     Top = 37
     Width = 579
-    Height = 21
+    Height = 28
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 0
     Text = 'C:\Users\jack\Desktop\TSQLClientdatasetMigration\ProjetoTeste'
   end
   object btAbrirPasta: TButton
-    Left = 598
-    Top = 36
+    Left = 596
+    Top = 38
     Width = 41
     Height = 25
     Caption = ' >> '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 1
   end
   object mmLog: TMemo
@@ -52,6 +64,12 @@ object frMigrationView: TfrMigrationView
     Top = 96
     Width = 631
     Height = 209
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 2
   end
   object btProcessar: TButton
@@ -60,6 +78,12 @@ object frMigrationView: TfrMigrationView
     Width = 75
     Height = 25
     Caption = 'Processar'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 3
     OnClick = btProcessarClick
   end

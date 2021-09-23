@@ -5,7 +5,9 @@ uses
   MigrationView in 'MigrationView.pas' {frMigrationView},
   MigrationController in 'MigrationController.pas',
   Configuracoes in 'Configuracoes.pas',
-  ListaArquivos in 'ListaArquivos.pas';
+  ListaArquivos in 'ListaArquivos.pas',
+  MigrationTipos in 'MigrationTipos.pas',
+  Conversor in 'Conversor.pas';
 
 {$R *.res}
 
