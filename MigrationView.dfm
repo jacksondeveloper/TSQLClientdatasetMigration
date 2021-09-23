@@ -52,8 +52,6 @@ object frMigrationView: TfrMigrationView
     Top = 96
     Width = 631
     Height = 209
-    Lines.Strings = (
-      'mmLog')
     TabOrder = 2
   end
   object btProcessar: TButton
@@ -63,5 +61,6 @@ object frMigrationView: TfrMigrationView
     Height = 25
     Caption = 'Processar'
     TabOrder = 3
+    OnClick = btProcessarClick
   end
 end

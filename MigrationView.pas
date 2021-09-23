@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, MigrationController, StdCtrls, Configuracoes;
+  Dialogs, MigrationController, StdCtrls, Configuracoes, ListaArquivos;
 
 type
   TfrMigrationView = class(TForm)
@@ -16,9 +16,11 @@ type
     btProcessar: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btProcessarClick(Sender: TObject);
   private
-    fMigrationController: iMigrationController;
-    fConfiguracoes: iConfiguracoes;
+    FMigrationController: iMigrationController;
+    FConfiguracoes: iConfiguracoes;
+    FListaArquivos: IListaArquivos;
   public
     procedure LerConfiguracoes;
     procedure SalvarConfiguracoes;
@@ -33,9 +35,10 @@ implementation
 
 procedure TfrMigrationView.FormCreate(Sender: TObject);
 begin
-  fConfiguracoes := TConfiguracoes.New;
-  fMigrationController := TMigrationController.New;
-  
+  FConfiguracoes       := TConfiguracoes.New;
+  FMigrationController := TMigrationController.New;
+  FListaArquivos       := TListaArquivos.Create;
+
   LerConfiguracoes;
 end;
 
@@ -53,6 +56,12 @@ end;
 procedure TfrMigrationView.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   SalvarConfiguracoes;
+end;
+
+procedure TfrMigrationView.btProcessarClick(Sender: TObject);
+begin
+  FListaArquivos.Carregar(edDiretorio.Text, True);
+  mmLog.Lines.Add('Total de arquivos PAS e DFM: ' + IntToStr(FListaArquivos.GetListaArquivos.Count))
 end;
 
 end.
