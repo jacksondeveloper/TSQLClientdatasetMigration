@@ -67,7 +67,7 @@ begin
   try
 
     FListaArquivos.Carregar(edDiretorio.Text, True);
-    mmLog.Lines.Add('Total de arquivos PAS e DFM: ' + IntToStr(FListaArquivos.GetListaArquivos.Count));
+    DoLog('Total de arquivos PAS e DFM: ' + IntToStr(FListaArquivos.GetListaArquivos.Count));
 
     FConversor.Substituir(FListaArquivos.GetListaArquivos);
 
