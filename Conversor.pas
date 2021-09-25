@@ -53,6 +53,7 @@ procedure TConversor.Substituir(ListaArquivos: TStringList);
 var
   Arquivo: TStringList;
   Contador, Contador2: Integer;
+  ArquivoFoiAlterado: Boolean;
 begin
   DoLog('Substituição iniciada...');
 
@@ -63,17 +64,21 @@ begin
     try
 
       Arquivo.LoadFromFile(ListaArquivos[Contador]);
+      ArquivoFoiAlterado := False;
 
       for Contador2 := 0 to Pred(Arquivo.Count) do
       begin
         if Pos(SQLClientDataSetObjName, Arquivo.Strings[Contador2]) > 0 then
         begin
+          ArquivoFoiAlterado := True;
           Arquivo.Strings[Contador2] := StringReplace(Arquivo.Strings[Contador2], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
-          DoLog(ExtractFileName(ListaArquivos[Contador]) + ' alterado - ' + Arquivo.Strings[Contador2]);
+          DoLog(ExtractFileName(ListaArquivos[Contador]) + ' -> ' + Arquivo.Strings[Contador2] + ' -> ' + Arquivo.Strings[Contador2]);
+          // Todo - Adcionar os componentes de query e provider aqui
         end;
       end;
 
-      Arquivo.SaveToFile(ListaArquivos[Contador]);
+      if ArquivoFoiAlterado then
+        Arquivo.SaveToFile(ListaArquivos[Contador]);
 
     finally
       FreeAndNil(Arquivo);

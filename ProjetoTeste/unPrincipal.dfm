@@ -64,7 +64,7 @@ object fmPrincipal: TfmPrincipal
         Visible = True
       end>
   end
-  object cdsProduto: TSQLClientDataSet
+  object cdsProduto: TClientDataSet
     CommandText = 'select * from CLIENTE'
     Aggregates = <>
     Options = [poAllowCommandText]
@@ -87,7 +87,7 @@ object fmPrincipal: TfmPrincipal
     Left = 16
     Top = 56
   end
-  object cdsCliente: TSQLClientDataSet
+  object cdsCliente: TClientDataSet
     CommandText = 'select * from CLIENTE'
     Aggregates = <>
     Options = [poAllowCommandText]
