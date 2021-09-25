@@ -3,7 +3,7 @@ unit Conversor;
 interface
 
 uses
-  Classes, MigrationTipos;
+  SysUtils, Classes, MigrationTipos;
 
 type
 
@@ -50,10 +50,30 @@ begin
 end;
 
 procedure TConversor.Substituir(ListaArquivos: TStringList);
+var
+  Arquivo: TStringList;
+  Contador, Contador2: Integer;
 begin
   DoLog('Substituição iniciada...');
 
-  
+  for Contador := 0 to Pred(ListaArquivos.Count) do
+  begin
+
+    Arquivo := TStringList.Create;
+    try
+
+      Arquivo.LoadFromFile(ListaArquivos[Contador]);
+
+      for Contador2 := 0 to Pred(Arquivo.Count) do
+      begin
+        DoLog(Arquivo.Strings[Contador2]);
+      end;
+
+    finally
+      FreeAndNil(Arquivo);
+    end;
+
+  end;
 
   DoLog('Substituição finalizada.');
 end;

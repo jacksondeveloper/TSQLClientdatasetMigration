@@ -1,7 +1,7 @@
 object frMigrationView: TfrMigrationView
   Left = 313
   Top = 193
-  Width = 811
+  Width = 800
   Height = 525
   Caption = 'TSQLClientdatasetMigration'
   Color = clBtnFace
@@ -15,7 +15,7 @@ object frMigrationView: TfrMigrationView
   OnClose = FormClose
   OnCreate = FormCreate
   DesignSize = (
-    795
+    784
     486)
   PixelsPerInch = 96
   TextHeight = 13
@@ -36,7 +36,7 @@ object frMigrationView: TfrMigrationView
   object edDiretorio: TEdit
     Left = 10
     Top = 37
-    Width = 724
+    Width = 713
     Height = 28
     Anchors = [akLeft, akTop, akRight]
     Font.Charset = DEFAULT_CHARSET
@@ -49,7 +49,7 @@ object frMigrationView: TfrMigrationView
     Text = 'C:\Users\jack\Desktop\TSQLClientdatasetMigration\ProjetoTeste'
   end
   object btAbrirPasta: TButton
-    Left = 744
+    Left = 733
     Top = 38
     Width = 41
     Height = 25
@@ -66,7 +66,7 @@ object frMigrationView: TfrMigrationView
   object mmLog: TMemo
     Left = 10
     Top = 96
-    Width = 775
+    Width = 764
     Height = 351
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
@@ -79,7 +79,7 @@ object frMigrationView: TfrMigrationView
     TabOrder = 2
   end
   object btProcessar: TButton
-    Left = 327
+    Left = 316
     Top = 456
     Width = 98
     Height = 25
