@@ -5,6 +5,7 @@ interface
 const
 
   SQLClientDataSetObjName = 'TSQLClientDataSet';
+  ClientDataSetObjName = 'TClientDataSet';
 
 Type  
 

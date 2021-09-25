@@ -3,7 +3,7 @@ unit ListaArquivos;
 interface
 
 uses
-  SysUtils, Classes;
+  SysUtils, Classes, MigrationTipos;
 
 type
 
@@ -17,6 +17,7 @@ type
   private
     FListaArquivos: TStringList;
     function TemAtributo(Attr, Val: Integer): Boolean;
+    function PossuiComponente(Arquivo: String): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -51,9 +52,10 @@ begin
       else
       begin
         if (ExtractFileExt(f.Name) = '.pas') or (ExtractFileExt(f.Name) = '.dfm') then
-        begin
-          FListaArquivos.Add(Diretorio+'\'+F.Name);
-        end;
+          if PossuiComponente(Diretorio + '\' + f.Name) then
+          begin
+            FListaArquivos.Add(Diretorio + '\' + F.Name);
+          end;
       end;
         Ret := FindNext(F);
     end;
@@ -86,6 +88,20 @@ end;
 function TListaArquivos.GetListaArquivos: TStringList;
 begin
   Result := FListaArquivos;
+end;
+
+function TListaArquivos.PossuiComponente(Arquivo: String): Boolean;
+var
+  lArquivo: TStringList;
+begin
+  Result := False;
+  lArquivo := TStringList.Create;
+  try
+    lArquivo.LoadFromFile(Arquivo);
+    Result := (Pos(SQLClientDataSetObjName, lArquivo.Text) > 0);
+  finally
+    FreeAndNil(lArquivo);
+  end;
 end;
 
 end.

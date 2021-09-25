@@ -66,8 +66,14 @@ begin
 
       for Contador2 := 0 to Pred(Arquivo.Count) do
       begin
-        DoLog(Arquivo.Strings[Contador2]);
+        if Pos(SQLClientDataSetObjName, Arquivo.Strings[Contador2]) > 0 then
+        begin
+          Arquivo.Strings[Contador2] := StringReplace(Arquivo.Strings[Contador2], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
+          DoLog(ExtractFileName(ListaArquivos[Contador]) + ' alterado - ' + Arquivo.Strings[Contador2]);
+        end;
       end;
+
+      Arquivo.SaveToFile(ListaArquivos[Contador]);
 
     finally
       FreeAndNil(Arquivo);
