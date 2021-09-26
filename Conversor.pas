@@ -73,7 +73,40 @@ begin
           ArquivoFoiAlterado := True;
           Arquivo.Strings[Contador2] := StringReplace(Arquivo.Strings[Contador2], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
           DoLog(ExtractFileName(ListaArquivos[Contador]) + ' -> ' + Arquivo.Strings[Contador2] + ' -> ' + Arquivo.Strings[Contador2]);
+
           // Todo - Adcionar os componentes de query e provider aqui
+          {
+
+          PAS
+
+          SQLQuery1: TSQLQuery;
+          DataSetProvider1: TDataSetProvider;
+          ClientDataSet1: TClientDataSet;
+
+          DFM
+
+          object SQLQuery1: TSQLQuery
+            NoMetadata = True
+            SQLConnection = SQLConnection1
+            Params = <>
+            Left = 384
+            Top = 112
+          end
+          object DataSetProvider1: TDataSetProvider
+            DataSet = SQLQuery1
+            Constraints = True
+            Left = 440
+            Top = 120
+          end
+          object ClientDataSet1: TClientDataSet
+            Aggregates = <>
+            CommandText = 'select * from teste'
+            Params = <>
+            ProviderName = 'DataSetProvider1'
+            Left = 512
+            Top = 112
+          end
+          }
         end;
       end;
 
