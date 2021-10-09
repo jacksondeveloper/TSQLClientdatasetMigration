@@ -7,7 +7,8 @@ uses
   Configuracoes in 'Configuracoes.pas',
   ListaArquivos in 'ListaArquivos.pas',
   MigrationTipos in 'MigrationTipos.pas',
-  Conversor in 'Conversor.pas';
+  Conversor in 'Conversor.pas',
+  Uteis in 'Uteis.pas';
 
 {$R *.res}
 

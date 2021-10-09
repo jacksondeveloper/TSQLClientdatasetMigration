@@ -3,7 +3,7 @@ unit Conversor;
 interface
 
 uses
-  SysUtils, Classes, MigrationTipos;
+  SysUtils, Classes, MigrationTipos, Uteis;
 
 type
 
@@ -54,6 +54,8 @@ var
   Arquivo: TStringList;
   Contador, Contador2: Integer;
   ArquivoFoiAlterado: Boolean;
+  NomeCdsAtual, EspacosIdentacao: string;
+  NomeNovoProvider, NomeNovaQuery: String;
 begin
   DoLog('Substituição iniciada...');
 
@@ -68,45 +70,71 @@ begin
 
       for Contador2 := 0 to Pred(Arquivo.Count) do
       begin
+        NomeCdsAtual := '';
+        EspacosIdentacao := '';
+
         if Pos(SQLClientDataSetObjName, Arquivo.Strings[Contador2]) > 0 then
         begin
-          ArquivoFoiAlterado := True;
-          Arquivo.Strings[Contador2] := StringReplace(Arquivo.Strings[Contador2], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
-          DoLog(ExtractFileName(ListaArquivos[Contador]) + ' -> ' + Arquivo.Strings[Contador2] + ' -> ' + Arquivo.Strings[Contador2]);
 
-          // Todo - Adcionar os componentes de query e provider aqui
-          {
+          if LowerCase(ExtractFileExt(ListaArquivos[Contador])) = '.pas' then
+          begin
+            NomeCdsAtual := Trim(Copy(Arquivo.Strings[Contador2], 0, Pos(':', Arquivo.Strings[Contador2]) - 1));
+            EspacosIdentacao := Copy(Arquivo.Strings[Contador2], 0, PosicaoPrimeiroCaracter(Arquivo.Strings[Contador2]) - 1);
+            ArquivoFoiAlterado := True;
 
-          PAS
+            // Troca TSQLClientDataSet para ClientDataSet
+            Arquivo.Strings[Contador2] := StringReplace(Arquivo.Strings[Contador2], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
+            DoLog(ExtractFileName(ListaArquivos[Contador]) + ' -> ' + Arquivo.Strings[Contador2] + ' -> ' + Arquivo.Strings[Contador2]);
 
-          SQLQuery1: TSQLQuery;
-          DataSetProvider1: TDataSetProvider;
-          ClientDataSet1: TClientDataSet;
+            // Adiciona provider novo
+            NomeNovoProvider := EspacosIdentacao + PrefixoDataSetProvider + NomeCdsAtual + ': ' + DataSetProviderObjName + ';';
+            Arquivo.Insert(Contador2 + 1,  NomeNovoProvider);
+            DoLog(ExtractFileName(ListaArquivos[Contador]) + ' -> ' + NomeNovoProvider);
 
-          DFM
+            // Adiciona query nova
+            NomeNovaQuery := EspacosIdentacao + PrefixoQuery + NomeCdsAtual + ': ' + QueryObjName + ';';
+            Arquivo.Insert(Contador2 + 2,  NomeNovaQuery);
+            DoLog(ExtractFileName(ListaArquivos[Contador]) + ' -> ' + NomeNovaQuery);
 
-          object SQLQuery1: TSQLQuery
-            NoMetadata = True
-            SQLConnection = SQLConnection1
-            Params = <>
-            Left = 384
-            Top = 112
+            // Todo - Adcionar os componentes de query e provider aqui
+            {
+
+            PAS
+
+            SQLQuery1: TSQLQuery;
+            DataSetProvider1: TDataSetProvider;
+            ClientDataSet1: TClientDataSet;
+
+            DFM
+
+            object SQLQuery1: TSQLQuery
+              NoMetadata = True
+              SQLConnection = SQLConnection1
+              Params = <>
+              Left = 384
+              Top = 112
+            end
+            object DataSetProvider1: TDataSetProvider
+              DataSet = SQLQuery1
+              Constraints = True
+              Left = 440
+              Top = 120
+            end
+            object ClientDataSet1: TClientDataSet
+              Aggregates = <>
+              CommandText = 'select * from teste'
+              Params = <>
+              ProviderName = 'DataSetProvider1'
+              Left = 512
+              Top = 112
+            end
+            }
           end
-          object DataSetProvider1: TDataSetProvider
-            DataSet = SQLQuery1
-            Constraints = True
-            Left = 440
-            Top = 120
-          end
-          object ClientDataSet1: TClientDataSet
-            Aggregates = <>
-            CommandText = 'select * from teste'
-            Params = <>
-            ProviderName = 'DataSetProvider1'
-            Left = 512
-            Top = 112
-          end
-          }
+          else
+          begin
+
+          end;
+
         end;
       end;
 

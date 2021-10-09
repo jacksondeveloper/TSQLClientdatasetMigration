@@ -6,6 +6,10 @@ const
 
   SQLClientDataSetObjName = 'TSQLClientDataSet';
   ClientDataSetObjName = 'TClientDataSet';
+  DataSetProviderObjName = 'TDataSetProvider';
+  PrefixoDataSetProvider = 'dsp';
+  QueryObjName = 'TSQLQuery';
+  PrefixoQuery = 'qry';
 
 Type  
 
