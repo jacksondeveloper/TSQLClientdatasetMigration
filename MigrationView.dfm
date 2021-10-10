@@ -28,10 +28,17 @@ object frMigrationView: TfrMigrationView
   end
   object Label2: TLabel
     Left = 10
-    Top = 70
+    Top = 126
     Width = 18
     Height = 13
     Caption = 'Log'
+  end
+  object Label3: TLabel
+    Left = 10
+    Top = 70
+    Width = 197
+    Height = 13
+    Caption = 'Nome do componente de conex'#227'o banco'
   end
   object edDiretorio: TEdit
     Left = 10
@@ -65,9 +72,9 @@ object frMigrationView: TfrMigrationView
   end
   object mmLog: TMemo
     Left = 10
-    Top = 96
+    Top = 144
     Width = 764
-    Height = 351
+    Height = 302
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -93,5 +100,20 @@ object frMigrationView: TfrMigrationView
     ParentFont = False
     TabOrder = 3
     OnClick = btProcessarClick
+  end
+  object edConexao: TEdit
+    Left = 10
+    Top = 93
+    Width = 763
+    Height = 28
+    Anchors = [akLeft, akTop, akRight]
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 4
+    Text = 'SQLConnection1'
   end
 end
