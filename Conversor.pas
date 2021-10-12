@@ -57,7 +57,8 @@ var
   NomeCdsAtual, EspacosIdentacao: string;
   NomeNovoProvider, NomeNovaQuery: String;
   ComponenteQuery, ComponenteProvider: String;
-  PropriedadeCds, ConnectionAtual: String;
+  PropriedadeCds, ConnectionAtual, OptionsAtual: String;
+  LeftAtual, TopAtual: Integer;
 begin
   DoLog('Substituição iniciada...');
 
@@ -158,6 +159,9 @@ begin
               PropriedadeCds := Trim(Arquivo.Strings[Contador3]);
 
               if Pos('Options', PropriedadeCds) > 0 then
+                OptionsAtual := Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds)));
+
+              if Pos('Options', PropriedadeCds) > 0 then
                 Arquivo.Delete(Contador3);
 
               if Pos('DBConnection', PropriedadeCds) > 0 then
@@ -165,6 +169,12 @@ begin
 
               if Pos('DBConnection', PropriedadeCds) > 0 then
                 Arquivo.Delete(Contador3);
+
+              if Pos('Left', PropriedadeCds) > 0 then
+                LeftAtual := StrToInt(Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds))));
+
+              if Pos('Top', PropriedadeCds) > 0 then
+                TopAtual := StrToInt(Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds))));
 
             end;
 
@@ -175,25 +185,22 @@ begin
                                EspacosIdentacao + '  NoMetadata = True' + sLineBreak +
                                EspacosIdentacao + '  SQLConnection = ' + ConnectionAtual + sLineBreak +
                                EspacosIdentacao + '  Params = <>' + sLineBreak +
-                               EspacosIdentacao + '  Left = 0' + sLineBreak +
-                               EspacosIdentacao + '  Top = 112' + sLineBreak +
+                               EspacosIdentacao + '  Left = ' + IntToStr(LeftAtual + 40) + sLineBreak +
+                               EspacosIdentacao + '  Top = ' + IntToStr(TopAtual) + sLineBreak +
                                EspacosIdentacao + 'end';
             Arquivo.Insert(Contador2, ComponenteQuery);
+            LeftAtual := LeftAtual + 40;
 
             // Adiciona provider novo
             ComponenteProvider := '';
             ComponenteProvider := EspacosIdentacao + 'object ' + PrefixoDataSetProvider + NomeCdsAtual + ': ' + DataSetProviderObjName + sLineBreak +
                                   EspacosIdentacao + '  DataSet = ' + NomeNovaQuery + sLineBreak +
                                   EspacosIdentacao + '  Constraints = True' + sLineBreak +
-                                  EspacosIdentacao + '  Options = [poAllowCommandText]'  + sLineBreak +
-                                  EspacosIdentacao + '  Left = 0' + sLineBreak +
-                                  EspacosIdentacao + '  Top = 120' + sLineBreak +
+                                  EspacosIdentacao + '  Options = ' + OptionsAtual + sLineBreak +
+                                  EspacosIdentacao + '  Left = ' + IntToStr(LeftAtual + 40) + sLineBreak +
+                                  EspacosIdentacao + '  Top = ' + IntToStr(TopAtual) + sLineBreak +
                                   EspacosIdentacao + 'end';
-            Arquivo.Insert(Contador2, ComponenteProvider);  
-
-            // Todo - left e top dos componentes novo baseados no sqlclientdataset atual
-            // Todo - no provider novo colocar o allowcomandtext
-
+            Arquivo.Insert(Contador2, ComponenteProvider);
           end;
 
         end;
