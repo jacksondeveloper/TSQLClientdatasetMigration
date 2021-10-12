@@ -64,26 +64,13 @@ object fmPrincipal: TfmPrincipal
         Visible = True
       end>
   end
-  object dspcdsProduto: TDataSetProvider
-    DataSet = qrycdsProduto
-    Constraints = True
-    Options = [poAllowCommandText]
-    Left = 0
-    Top = 120
-  end
-  object qrycdsProduto: TSQLQuery
-    NoMetadata = True
-    SQLConnection = dtmPrincipal.SQLConnection
-    Params = <>
-    Left = 0
-    Top = 112
-  end
-  object cdsProduto: TClientDataSet
-    ProviderName = 'dspcdsProduto'
+  object cdsProduto: TSQLClientDataSet
     CommandText = 'select * from CLIENTE'
     Aggregates = <>
+    Options = [poAllowCommandText]
     ObjectView = True
     Params = <>
+    DBConnection = dtmPrincipal.SQLConnection
     Left = 32
     Top = 16
     object cdsProdutoID: TIntegerField
@@ -100,26 +87,13 @@ object fmPrincipal: TfmPrincipal
     Left = 16
     Top = 56
   end
-  object dspcdsCliente: TDataSetProvider
-    DataSet = qrycdsCliente
-    Constraints = True
-    Options = [poAllowCommandText]
-    Left = 0
-    Top = 120
-  end
-  object qrycdsCliente: TSQLQuery
-    NoMetadata = True
-    SQLConnection = dtmPrincipal.SQLConnection
-    Params = <>
-    Left = 0
-    Top = 112
-  end
-  object cdsCliente: TClientDataSet
-    ProviderName = 'dspcdsCliente'
+  object cdsCliente: TSQLClientDataSet
     CommandText = 'select * from CLIENTE'
     Aggregates = <>
+    Options = [poAllowCommandText]
     ObjectView = True
     Params = <>
+    DBConnection = dtmPrincipal.SQLConnection
     Left = 48
     Top = 128
     object cdsClienteID: TIntegerField
