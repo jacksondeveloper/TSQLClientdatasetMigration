@@ -52,11 +52,12 @@ end;
 procedure TConversor.Substituir(ListaArquivos: TStringList; ComponentConexao: String);
 var
   Arquivo: TStringList;
-  Contador, Contador2: Integer;
+  Contador, Contador2, Contador3: Integer;
   ArquivoFoiAlterado: Boolean;
   NomeCdsAtual, EspacosIdentacao: string;
   NomeNovoProvider, NomeNovaQuery: String;
   ComponenteQuery, ComponenteProvider: String;
+  PropriedadeCds: String;
 begin
   DoLog('Substituição iniciada...');
 
@@ -115,6 +116,8 @@ begin
 
             // Troca TSQLClientDataSet para ClientDataSet
             Arquivo.Strings[Contador2] := StringReplace(Arquivo.Strings[Contador2], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
+            // Insere provider no clientdaset
+            Arquivo.Insert(Contador2 + 1, EspacosIdentacao + '  ProviderName = ' + QuotedStr(PrefixoDataSetProvider + NomeCdsAtual));
 
             // Adiciona query nova
             NomeNovaQuery := PrefixoQuery + NomeCdsAtual;
@@ -138,7 +141,6 @@ begin
                                   EspacosIdentacao + 'end';
             Arquivo.Insert(Contador2, ComponenteProvider);  
 
-            // Todo - setar provide no clientdataset
             // Todo - remover propriedade options no sqlclientdataset
             // Todo - remover propriedade de conexao no sqlclientdataset
             // Todo - left e top dos componentes novo baseados no sqlclientdataset atual
