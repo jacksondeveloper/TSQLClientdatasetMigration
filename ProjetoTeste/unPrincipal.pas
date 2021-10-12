@@ -9,11 +9,15 @@ uses
 
 type
   TfmPrincipal = class(TForm)
-    cdsProduto: TSQLClientDataSet;
+    cdsProduto: TClientDataSet;
+    dspcdsProduto: TDataSetProvider;
+    qrycdsProduto: TSQLQuery;
     dsProdutos: TDataSource;
     gridProduto: TDBGrid;
     gridCliente: TDBGrid;
-    cdsCliente: TSQLClientDataSet;
+    cdsCliente: TClientDataSet;
+    dspcdsCliente: TDataSetProvider;
+    qrycdsCliente: TSQLQuery;
     dsCliente: TDataSource;
     cdsProdutoID: TIntegerField;
     cdsProdutoDESCRICAO: TStringField;

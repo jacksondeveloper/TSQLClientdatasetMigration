@@ -14,8 +14,6 @@ type
     mmLog: TMemo;
     Label2: TLabel;
     btProcessar: TButton;
-    edConexao: TEdit;
-    Label3: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btProcessarClick(Sender: TObject);
@@ -50,13 +48,11 @@ end;
 procedure TfrMigrationView.LerConfiguracoes;
 begin
   edDiretorio.Text := fConfiguracoes.GetDiretorio;
-  edConexao.Text := FConfiguracoes.GetConexao;
 end;
 
 procedure TfrMigrationView.SalvarConfiguracoes;
 begin
   fConfiguracoes.SetDiretorio(edDiretorio.Text);
-  FConfiguracoes.SetConexao(edConexao.Text);
   fConfiguracoes.SalvarConfiguracoes;
 end;
 
@@ -73,7 +69,7 @@ begin
     FListaArquivos.Carregar(edDiretorio.Text, True);
     DoLog('Total de arquivos PAS e DFM: ' + IntToStr(FListaArquivos.GetListaArquivos.Count));
 
-    FConversor.Substituir(FListaArquivos.GetListaArquivos, edConexao.Text);
+    FConversor.Substituir(FListaArquivos.GetListaArquivos);
 
   finally
     btProcessar.Enabled := True;
