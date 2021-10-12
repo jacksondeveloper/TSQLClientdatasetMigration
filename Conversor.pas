@@ -116,8 +116,22 @@ begin
 
             // Troca TSQLClientDataSet para ClientDataSet
             Arquivo.Strings[Contador2] := StringReplace(Arquivo.Strings[Contador2], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
+
             // Insere provider no clientdaset
             Arquivo.Insert(Contador2 + 1, EspacosIdentacao + '  ProviderName = ' + QuotedStr(PrefixoDataSetProvider + NomeCdsAtual));
+
+            // Deleta e pegar propriedades do clientdataset atual
+            Contador3 := Contador2;
+            while Trim(Arquivo.Strings[Contador3]) <> 'end' do
+            begin
+              Inc(Contador3);
+
+              if Pos('Options', Trim(Arquivo.Strings[Contador3])) > 0 then
+                Arquivo.Delete(Contador3);
+
+              if Pos('DBConnection', Trim(Arquivo.Strings[Contador3])) > 0 then
+                Arquivo.Delete(Contador3);
+            end;
 
             // Adiciona query nova
             NomeNovaQuery := PrefixoQuery + NomeCdsAtual;
@@ -141,8 +155,6 @@ begin
                                   EspacosIdentacao + 'end';
             Arquivo.Insert(Contador2, ComponenteProvider);  
 
-            // Todo - remover propriedade options no sqlclientdataset
-            // Todo - remover propriedade de conexao no sqlclientdataset
             // Todo - left e top dos componentes novo baseados no sqlclientdataset atual
             // Todo - no provider novo colocar o allowcomandtext
 
