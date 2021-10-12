@@ -68,6 +68,9 @@ begin
     Arquivo := TStringList.Create;
     try
 
+      {todo jackson - só deve substituir sqlclientdataset que existem no pas e no dfm
+      para não alterar os componentes criados em tempo de execução.}
+
       Arquivo.LoadFromFile(ListaArquivos[Contador]);
       ArquivoFoiAlterado := False;
 
@@ -76,7 +79,9 @@ begin
         NomeCdsAtual := '';
         EspacosIdentacao := '';
 
-        if Pos(SQLClientDataSetObjName, Arquivo.Strings[Contador2]) > 0 then
+        if (Pos(': ' + SQLClientDataSetObjName + ';', Arquivo.Strings[Contador2]) > 0) and
+           (Pos('procedure', Arquivo.Strings[Contador2]) <= 0) and
+           (Pos('function', Arquivo.Strings[Contador2]) <= 0) then
         begin
 
           if LowerCase(ExtractFileExt(ListaArquivos[Contador])) = '.pas' then
