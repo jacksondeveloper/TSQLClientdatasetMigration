@@ -51,7 +51,7 @@ end;
 
 procedure TConversor.Substituir(ListaArquivos: TStringList);
 var
-  Arquivo: TStringList;
+  Arquivo, ArquivoFDM: TStringList;
   Contador, Contador2, Contador3: Integer;
   ArquivoFoiAlterado: Boolean;
   NomeCdsAtual, EspacosIdentacao: string;
@@ -67,10 +67,6 @@ begin
 
     Arquivo := TStringList.Create;
     try
-
-      {todo jackson - só deve substituir sqlclientdataset que existem no pas e no dfm
-      para não alterar os componentes criados em tempo de execução.}
-
       Arquivo.LoadFromFile(ListaArquivos[Contador]);
       ArquivoFoiAlterado := False;
 
@@ -79,7 +75,7 @@ begin
         NomeCdsAtual := '';
         EspacosIdentacao := '';
 
-        if (Pos(': ' + SQLClientDataSetObjName + ';', Arquivo.Strings[Contador2]) > 0) and
+        if (Pos(': ' + SQLClientDataSetObjName, Arquivo.Strings[Contador2]) > 0) and
            (Pos('procedure', Arquivo.Strings[Contador2]) <= 0) and
            (Pos('function', Arquivo.Strings[Contador2]) <= 0) then
         begin
@@ -96,9 +92,24 @@ begin
 
             }
 
+            if not FileExists(Copy(ListaArquivos[Contador], 0, Length(ListaArquivos[Contador]) - 4) + '.dfm') then
+              Continue;
+
             NomeCdsAtual := Trim(Copy(Arquivo.Strings[Contador2], 0, Pos(':', Arquivo.Strings[Contador2]) - 1));
             EspacosIdentacao := Copy(Arquivo.Strings[Contador2], 0, PosicaoPrimeiroCaracter(Arquivo.Strings[Contador2]) - 1);
             ArquivoFoiAlterado := True;
+
+            ArquivoFDM := TStringList.Create;
+            try
+              ArquivoFDM.LoadFromFile(Copy(ListaArquivos[Contador], 0, Length(ListaArquivos[Contador]) - 4) + '.dfm');
+              if Pos(NomeCdsAtual, ArquivoFDM.Text) <= 0 then
+              begin
+                FreeAndNil(ArquivoFDM);
+                Continue;
+              end;
+            finally
+              FreeAndNil(ArquivoFDM);
+            end;
 
             // Troca TSQLClientDataSet para ClientDataSet
             Arquivo.Strings[Contador2] := StringReplace(Arquivo.Strings[Contador2], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
