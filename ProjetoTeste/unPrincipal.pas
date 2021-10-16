@@ -29,6 +29,7 @@ type
 
 var
   fmPrincipal: TfmPrincipal;
+  qryTeste: TSQLClientDataSet;
 
 implementation
 
@@ -36,7 +37,7 @@ implementation
 
 procedure TfmPrincipal.Executa(q: TSQLClientDataSet);
 begin
-  ShowMessage('teste');
+  qryTeste := q;
 end;
 
 procedure TfmPrincipal.FormCreate(Sender: TObject);
