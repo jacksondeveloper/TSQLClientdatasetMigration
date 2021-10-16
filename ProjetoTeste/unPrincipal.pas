@@ -22,6 +22,7 @@ type
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
+    procedure Executa(q: TSQLClientDataSet);
   public
     { Public declarations }
   end;
@@ -32,6 +33,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfmPrincipal.Executa(q: TSQLClientDataSet);
+begin
+  ShowMessage('teste');
+end;
 
 procedure TfmPrincipal.FormCreate(Sender: TObject);
 begin
