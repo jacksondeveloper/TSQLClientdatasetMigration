@@ -3,7 +3,7 @@ unit Conversor;
 interface
 
 uses
-  SysUtils, Classes, MigrationTipos, Uteis;
+  SysUtils, Classes, MigrationTipos, Uteis, Forms;
 
 type
 
@@ -65,6 +65,7 @@ begin
 
   for Contador := 0 to Pred(ListaArquivos.Count) do
   begin
+    Application.ProcessMessages;
 
     // Só substitui TSQClientDataSets que são visuais
     if not (LowerCase(ExtractFileExt(ListaArquivos[Contador])) = '.dfm') then
