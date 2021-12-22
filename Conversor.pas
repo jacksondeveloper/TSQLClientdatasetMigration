@@ -115,28 +115,28 @@ begin
 
             // Deleta e pegar propriedades do clientdataset atual
             Contador3 := Contador2;
-            while Trim(ArquivoFDM.Strings[Contador3]) <> 'end' do
+            while ArquivoFDM.Strings[Contador3] <> (EspacosIdentacao + 'end') do
             begin
               Inc(Contador3);
 
               PropriedadeCds := Trim(ArquivoFDM.Strings[Contador3]);
 
-              if Pos('Options', PropriedadeCds) > 0 then
+              if Pos('Options = ', PropriedadeCds) > 0 then
                 OptionsAtual := Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds)));
 
-              if Pos('Options', PropriedadeCds) > 0 then
+              if Pos('Options = ', PropriedadeCds) > 0 then
                 ArquivoFDM.Delete(Contador3);
 
-              if Pos('DBConnection', PropriedadeCds) > 0 then
+              if Pos('DBConnection = ', PropriedadeCds) > 0 then
                 ConnectionAtual := Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds)));
 
-              if Pos('DBConnection', PropriedadeCds) > 0 then
+              if Pos('DBConnection = ', PropriedadeCds) > 0 then
                 ArquivoFDM.Delete(Contador3);
 
-              if Pos('Left', PropriedadeCds) > 0 then
+              if Pos('Left = ', PropriedadeCds) > 0 then
                 LeftAtual := StrToInt(Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds))));
 
-              if Pos('Top', PropriedadeCds) > 0 then
+              if Pos('Top = ', PropriedadeCds) > 0 then
                 TopAtual := StrToInt(Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds))));
 
             end;
