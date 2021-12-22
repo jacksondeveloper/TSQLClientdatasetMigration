@@ -51,13 +51,14 @@ end;
 
 procedure TConversor.Substituir(ListaArquivos: TStringList);
 var
-  Arquivo, ArquivoFDM: TStringList;
-  Contador, Contador2, Contador3: Integer;
-  ArquivoFoiAlterado: Boolean;
+  ArquivoFDM, ArquivoPAS: TStringList;
+  Contador, Contador2, Contador3, LinhaPAS: Integer;
+  ArquivoPASFoiAlterado, ArquivoDFMFoiAlterado: Boolean;
   NomeCdsAtual, EspacosIdentacao: string;
   NomeNovoProvider, NomeNovaQuery: String;
   ComponenteQuery, ComponenteProvider: String;
   PropriedadeCds, ConnectionAtual, OptionsAtual: String;
+  NomeArquivoPAS: String;
   LeftAtual, TopAtual: Integer;
 begin
   DoLog('Substituição iniciada...');
@@ -65,168 +66,138 @@ begin
   for Contador := 0 to Pred(ListaArquivos.Count) do
   begin
 
-    Arquivo := TStringList.Create;
-    try
-      Arquivo.LoadFromFile(ListaArquivos[Contador]);
-      ArquivoFoiAlterado := False;
+    // Só substitui TSQClientDataSets que são visuais
+    if not (LowerCase(ExtractFileExt(ListaArquivos[Contador])) = '.dfm') then
+      Continue;
 
-      for Contador2 := 0 to Pred(Arquivo.Count) do
+    ArquivoFDM := TStringList.Create;
+    try
+      // Inicializa variaveis
+      ArquivoPASFoiAlterado := False;
+      ArquivoDFMFoiAlterado := False;
+      NomeArquivoPAS := '';
+
+      // Carregar arquivo DFM
+      ArquivoFDM.LoadFromFile(ListaArquivos[Contador]);
+
+      for Contador2 := 0 to Pred(ArquivoFDM.Count) do
       begin
+
+        // Inicializa variaveis
         NomeCdsAtual := '';
         EspacosIdentacao := '';
 
-        if (Pos(': ' + SQLClientDataSetObjName, Arquivo.Strings[Contador2]) > 0) and
-           (Pos('procedure', Arquivo.Strings[Contador2]) <= 0) and
-           (Pos('function', Arquivo.Strings[Contador2]) <= 0) then
+        // Se encontrou um TSQLClientDataSet
+        if Pos(SQLClientDataSetObjName, ArquivoFDM[Contador2]) > 0 then
         begin
 
-          if LowerCase(ExtractFileExt(ListaArquivos[Contador])) = '.pas' then
+          // Busca nomes e identação dos componentes encontrados
+          NomeCdsAtual := Trim(Copy(ArquivoFDM.Strings[Contador2], 0, Pos(':', ArquivoFDM.Strings[Contador2]) - 1));
+          EspacosIdentacao := Copy(ArquivoFDM.Strings[Contador2], 0, PosicaoPrimeiroCaracter(ArquivoFDM.Strings[Contador2]) - 1);
+          NomeCdsAtual := Trim(StringReplace(NomeCdsAtual, 'object', '', [rfIgnoreCase]));
+          ArquivoDFMFoiAlterado := True;
+
+          // Troca TSQLClientDataSet para ClientDataSet
+          ArquivoFDM.Strings[Contador2] := StringReplace(ArquivoFDM.Strings[Contador2], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
+
+          // Insere provider no clientdaset
+          ArquivoFDM.Insert(Contador2 + 1, EspacosIdentacao + '  ProviderName = ' + QuotedStr(PrefixoDataSetProvider + NomeCdsAtual));
+
+          // Deleta e pegar propriedades do clientdataset atual
+          Contador3 := Contador2;
+          while Trim(ArquivoFDM.Strings[Contador3]) <> 'end' do
           begin
-            {
+            Inc(Contador3);
 
-            PAS
+            PropriedadeCds := Trim(ArquivoFDM.Strings[Contador3]);
 
-            SQLQuery1: TSQLQuery;
-            DataSetProvider1: TDataSetProvider;
-            ClientDataSet1: TClientDataSet;
+            if Pos('Options', PropriedadeCds) > 0 then
+              OptionsAtual := Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds)));
 
-            }
+            if Pos('Options', PropriedadeCds) > 0 then
+              ArquivoFDM.Delete(Contador3);
 
-            if not FileExists(Copy(ListaArquivos[Contador], 0, Length(ListaArquivos[Contador]) - 4) + '.dfm') then
-              Continue;
+            if Pos('DBConnection', PropriedadeCds) > 0 then
+              ConnectionAtual := Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds)));
 
-            NomeCdsAtual := Trim(Copy(Arquivo.Strings[Contador2], 0, Pos(':', Arquivo.Strings[Contador2]) - 1));
-            EspacosIdentacao := Copy(Arquivo.Strings[Contador2], 0, PosicaoPrimeiroCaracter(Arquivo.Strings[Contador2]) - 1);
-            ArquivoFoiAlterado := True;
+            if Pos('DBConnection', PropriedadeCds) > 0 then
+              ArquivoFDM.Delete(Contador3);
 
-            ArquivoFDM := TStringList.Create;
-            try
-              ArquivoFDM.LoadFromFile(Copy(ListaArquivos[Contador], 0, Length(ListaArquivos[Contador]) - 4) + '.dfm');
-              if Pos(NomeCdsAtual, ArquivoFDM.Text) <= 0 then
-              begin
-                FreeAndNil(ArquivoFDM);
-                Continue;
-              end;
-            finally
-              FreeAndNil(ArquivoFDM);
-            end;
+            if Pos('Left', PropriedadeCds) > 0 then
+              LeftAtual := StrToInt(Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds))));
 
-            // Troca TSQLClientDataSet para ClientDataSet
-            Arquivo.Strings[Contador2] := StringReplace(Arquivo.Strings[Contador2], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
+            if Pos('Top', PropriedadeCds) > 0 then
+              TopAtual := StrToInt(Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds))));
 
-            // Adiciona provider novo
-            NomeNovoProvider := EspacosIdentacao + PrefixoDataSetProvider + NomeCdsAtual + ': ' + DataSetProviderObjName + ';';
-            Arquivo.Insert(Contador2 + 1,  NomeNovoProvider);
+          end;
 
-            // Adiciona query nova
-            NomeNovaQuery := EspacosIdentacao + PrefixoQuery + NomeCdsAtual + ': ' + QueryObjName + ';';
-            Arquivo.Insert(Contador2 + 2,  NomeNovaQuery);
-            
-          end
-          else
-          begin
+          // Adiciona query nova
+          NomeNovaQuery := PrefixoQuery + NomeCdsAtual;
+          ComponenteQuery := '';
+          ComponenteQuery := EspacosIdentacao + 'object ' + NomeNovaQuery + ': ' + QueryObjName + sLineBreak +
+                             EspacosIdentacao + '  NoMetadata = True' + sLineBreak +
+                             EspacosIdentacao + '  SQLConnection = ' + ConnectionAtual + sLineBreak +
+                             EspacosIdentacao + '  Params = <>' + sLineBreak +
+                             EspacosIdentacao + '  Left = ' + IntToStr(LeftAtual + 40) + sLineBreak +
+                             EspacosIdentacao + '  Top = ' + IntToStr(TopAtual) + sLineBreak +
+                             EspacosIdentacao + 'end';
+          ArquivoFDM.Insert(Contador2, ComponenteQuery);
+          LeftAtual := LeftAtual + 40;
 
-            // DFM
+          // Adiciona provider novo
+          ComponenteProvider := '';
+          ComponenteProvider := EspacosIdentacao + 'object ' + PrefixoDataSetProvider + NomeCdsAtual + ': ' + DataSetProviderObjName + sLineBreak +
+                                EspacosIdentacao + '  DataSet = ' + NomeNovaQuery + sLineBreak +
+                                EspacosIdentacao + '  Constraints = True' + sLineBreak +
+                                EspacosIdentacao + '  Options = ' + OptionsAtual + sLineBreak +
+                                EspacosIdentacao + '  Left = ' + IntToStr(LeftAtual + 40) + sLineBreak +
+                                EspacosIdentacao + '  Top = ' + IntToStr(TopAtual) + sLineBreak +
+                                EspacosIdentacao + 'end';
+          ArquivoFDM.Insert(Contador2, ComponenteProvider);
 
-            {
+          // Altera no PAS
+          ArquivoPAS := TStringList.Create;
+          try
+            NomeArquivoPAS := Copy(ListaArquivos[Contador], 0, Length(ListaArquivos[Contador]) - 4) + '.pas';
+            ArquivoPAS.LoadFromFile(NomeArquivoPAS);
 
-            DFM
-
-            object SQLQuery1: TSQLQuery
-              NoMetadata = True
-              SQLConnection = SQLConnection1
-              Params = <>
-              Left = 384
-              Top = 112
-            end
-            object DataSetProvider1: TDataSetProvider
-              DataSet = SQLQuery1
-              Constraints = True
-              Left = 440
-              Top = 120
-            end
-            object ClientDataSet1: TClientDataSet
-              Aggregates = <>
-              CommandText = 'select * from teste'
-              Params = <>
-              ProviderName = 'DataSetProvider1'
-              Left = 512
-              Top = 112
-            end
-            }
-
-            NomeCdsAtual := Trim(Copy(Arquivo.Strings[Contador2], 0, Pos(':', Arquivo.Strings[Contador2]) - 1));
-            EspacosIdentacao := Copy(Arquivo.Strings[Contador2], 0, PosicaoPrimeiroCaracter(Arquivo.Strings[Contador2]) - 1);
-            NomeCdsAtual := Trim(StringReplace(NomeCdsAtual, 'object', '', [rfIgnoreCase]));
-            ArquivoFoiAlterado := True;
-
-            // Troca TSQLClientDataSet para ClientDataSet
-            Arquivo.Strings[Contador2] := StringReplace(Arquivo.Strings[Contador2], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
-
-            // Insere provider no clientdaset
-            Arquivo.Insert(Contador2 + 1, EspacosIdentacao + '  ProviderName = ' + QuotedStr(PrefixoDataSetProvider + NomeCdsAtual));
-
-            // Deleta e pegar propriedades do clientdataset atual
-            Contador3 := Contador2;
-            while Trim(Arquivo.Strings[Contador3]) <> 'end' do
+            for LinhaPAS := 0 to Pred(ArquivoPAS.Count) do
             begin
-              Inc(Contador3);
+              if Pos(NomeCdsAtual, ArquivoPAS[LinhaPAS]) > 0 then
+              begin
+                EspacosIdentacao := Copy(ArquivoPAS.Strings[LinhaPAS], 0, PosicaoPrimeiroCaracter(ArquivoPAS.Strings[LinhaPAS]) - 1);
+                ArquivoPasFoiAlterado := True;
 
-              PropriedadeCds := Trim(Arquivo.Strings[Contador3]);
+                // Troca TSQLClientDataSet para ClientDataSet
+                ArquivoPAS.Strings[LinhaPAS] := StringReplace(ArquivoPAS.Strings[LinhaPAS], SQLClientDataSetObjName, ClientDataSetObjName, [rfReplaceAll, rfIgnoreCase]);
 
-              if Pos('Options', PropriedadeCds) > 0 then
-                OptionsAtual := Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds)));
+                // Adiciona provider novo
+                NomeNovoProvider := EspacosIdentacao + PrefixoDataSetProvider + NomeCdsAtual + ': ' + DataSetProviderObjName + ';';
+                ArquivoPAS.Insert(LinhaPAS + 1,  NomeNovoProvider);
 
-              if Pos('Options', PropriedadeCds) > 0 then
-                Arquivo.Delete(Contador3);
+                // Adiciona query nova
+                NomeNovaQuery := EspacosIdentacao + PrefixoQuery + NomeCdsAtual + ': ' + QueryObjName + ';';
+                ArquivoPAS.Insert(LinhaPAS + 2,  NomeNovaQuery);
 
-              if Pos('DBConnection', PropriedadeCds) > 0 then
-                ConnectionAtual := Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds)));
-
-              if Pos('DBConnection', PropriedadeCds) > 0 then
-                Arquivo.Delete(Contador3);
-
-              if Pos('Left', PropriedadeCds) > 0 then
-                LeftAtual := StrToInt(Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds))));
-
-              if Pos('Top', PropriedadeCds) > 0 then
-                TopAtual := StrToInt(Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds))));
-
+                Break;
+              end;
             end;
 
-            // Adiciona query nova
-            NomeNovaQuery := PrefixoQuery + NomeCdsAtual;
-            ComponenteQuery := '';
-            ComponenteQuery := EspacosIdentacao + 'object ' + NomeNovaQuery + ': ' + QueryObjName + sLineBreak +
-                               EspacosIdentacao + '  NoMetadata = True' + sLineBreak +
-                               EspacosIdentacao + '  SQLConnection = ' + ConnectionAtual + sLineBreak +
-                               EspacosIdentacao + '  Params = <>' + sLineBreak +
-                               EspacosIdentacao + '  Left = ' + IntToStr(LeftAtual + 40) + sLineBreak +
-                               EspacosIdentacao + '  Top = ' + IntToStr(TopAtual) + sLineBreak +
-                               EspacosIdentacao + 'end';
-            Arquivo.Insert(Contador2, ComponenteQuery);
-            LeftAtual := LeftAtual + 40;
+            if ArquivoPasFoiAlterado then
+              ArquivoPAS.SaveToFile(NomeArquivoPAS);
 
-            // Adiciona provider novo
-            ComponenteProvider := '';
-            ComponenteProvider := EspacosIdentacao + 'object ' + PrefixoDataSetProvider + NomeCdsAtual + ': ' + DataSetProviderObjName + sLineBreak +
-                                  EspacosIdentacao + '  DataSet = ' + NomeNovaQuery + sLineBreak +
-                                  EspacosIdentacao + '  Constraints = True' + sLineBreak +
-                                  EspacosIdentacao + '  Options = ' + OptionsAtual + sLineBreak +
-                                  EspacosIdentacao + '  Left = ' + IntToStr(LeftAtual + 40) + sLineBreak +
-                                  EspacosIdentacao + '  Top = ' + IntToStr(TopAtual) + sLineBreak +
-                                  EspacosIdentacao + 'end';
-            Arquivo.Insert(Contador2, ComponenteProvider);
+          finally
+            FreeAndNil(ArquivoPAS);
           end;
 
         end;
       end;
 
-      if ArquivoFoiAlterado then
-        Arquivo.SaveToFile(ListaArquivos[Contador]);
+      if ArquivoDFMFoiAlterado then
+        ArquivoFDM.SaveToFile(ListaArquivos[Contador]);
 
     finally
-      FreeAndNil(Arquivo);
+      FreeAndNil(ArquivoFDM);
     end;
 
   end;
