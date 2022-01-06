@@ -122,7 +122,11 @@ begin
               PropriedadeCds := Trim(ArquivoFDM.Strings[Contador3]);
 
               if Pos('Options = ', PropriedadeCds) > 0 then
+              begin
                 OptionsAtual := Trim(Copy(PropriedadeCds, Pos('=', PropriedadeCds) + 1, Length(PropriedadeCds)));
+                OptionsAtual := Copy(OptionsAtual, 0, Length(OptionsAtual) - 1);
+                OptionsAtual := OptionsAtual + ', poRetainServerOrder]';
+              end;
 
               if Pos('Options = ', PropriedadeCds) > 0 then
                 ArquivoFDM.Delete(Contador3);
