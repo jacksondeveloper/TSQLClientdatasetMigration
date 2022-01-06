@@ -20,6 +20,9 @@ var
 
 implementation
 
+uses
+  dmPrincipal;
+
 {$R *.dfm}
 
 end.
