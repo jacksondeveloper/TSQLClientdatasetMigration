@@ -4,7 +4,7 @@ interface
 
 const
 
-  SQLClientDataSetObjName = 'TSQLClientDataSet';
+  SQLClientDataSetObjName = 'TSimpleDataSet';
   ClientDataSetObjName = 'TClientDataSet';
   DataSetProviderObjName = 'TDataSetProvider';
   PrefixoDataSetProvider = 'dsp';
