@@ -149,7 +149,7 @@ begin
             NomeNovaQuery := PrefixoQuery + NomeCdsAtual;
             ComponenteQuery := '';
             ComponenteQuery := EspacosIdentacao + 'object ' + NomeNovaQuery + ': ' + QueryObjName + sLineBreak +
-                               EspacosIdentacao + '  NoMetadata = True' + sLineBreak +
+                               //EspacosIdentacao + '  NoMetadata = True' + sLineBreak +
                                EspacosIdentacao + '  SQLConnection = ' + ConnectionAtual + sLineBreak +
                                EspacosIdentacao + '  Params = <>' + sLineBreak +
                                EspacosIdentacao + '  Left = ' + IntToStr(LeftAtual + 40) + sLineBreak +
