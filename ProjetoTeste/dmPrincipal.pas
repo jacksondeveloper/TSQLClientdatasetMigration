@@ -24,7 +24,7 @@ implementation
 
 procedure TdtmPrincipal.DataModuleCreate(Sender: TObject);
 begin
-  SQLConnection.Params.Values['Database'] := ExtractFilePath(ParamStr(0)) + '\Dados\DADOS.FDB';
+  SQLConnection.Params.Values['Database'] := '127.0.0.1:' + ExtractFilePath(ParamStr(0)) + '\Dados\DADOS.FDB';
   dtmPrincipal.SQLConnection.Connected := True;
 end;
 

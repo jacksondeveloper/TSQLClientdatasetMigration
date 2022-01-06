@@ -6,6 +6,7 @@ object dtmPrincipal: TdtmPrincipal
   Height = 150
   Width = 215
   object SQLConnection: TSQLConnection
+    Connected = True
     ConnectionName = 'IBLocal'
     DriverName = 'Interbase'
     GetDriverFunc = 'getSQLDriverINTERBASE'
@@ -14,7 +15,9 @@ object dtmPrincipal: TdtmPrincipal
     Params.Strings = (
       'BlobSize=-1'
       'CommitRetain=False'
-      'Database='
+      
+        'Database=127.0.0.1:C:\Users\jack\Desktop\TSQLClientdatasetMigrat' +
+        'ion\ProjetoTeste\Dados\DADOS.FDB'
       'DriverName=Interbase'
       'ErrorResourceFile='
       'LocaleCode=0000'
